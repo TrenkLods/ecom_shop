@@ -1,9 +1,12 @@
-import { Inter } from "@next/font/google";
+
 import { Product, FooterBanner, HeroBanner } from "../component";
 import { client } from "../lib/client";
-const inter = Inter({ subsets: ["latin"] });
+
+
 
 const Home = ({ products, bannerData }) => {
+
+  
   return (
     <>
       <HeroBanner heroBanner={bannerData.length && bannerData[1]} />

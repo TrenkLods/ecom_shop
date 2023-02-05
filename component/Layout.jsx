@@ -4,7 +4,7 @@ import Head from "next/head";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 const Layout = ({ children }) => {
-  console.log("11111");
+
   return (
     <div className="layout">
       <Head>

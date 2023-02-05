@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
+
+//import product from "@/sanity-project/schemas/product";
 import { client, urlFor } from "../../lib/client";
+
 import {
   AiOutlineMinus,
   AiOutlinePlus,
@@ -8,9 +11,39 @@ import {
   AiOutlineStar,
 } from "react-icons/ai";
 import { Product } from "../../component";
+import { ApiError } from "next/dist/server/api-utils";
+import {useStateContext} from '../../context/StateContext'
+
+
+//const cart = useSelector(state => state.cart)
+const handleBuyNow = () => {
+  onAdd(product, qty);
+
+  setShowCart(true);
+}
+const getTotalQuantity = () => {
+  let total = 0;
+  cart.forEach((item) => {
+    total += item.quantity;
+  });
+  return total;
+};
+
+
 const ProductDetails = ({ product, products }) => {
-  //console.log(product)
+
+  
   const [index, setIndex] = useState(0);
+  const {decQty,incQty,qty,onAdd, setShowCart}=useStateContext()
+ // console.log(products);
+
+  const handleBuyNow = () => {
+    onAdd(product, qty);
+
+    setShowCart(true);
+  }
+
+
   return (
     <div>
       <div className="product-detail-container">
@@ -27,7 +60,7 @@ const ProductDetails = ({ product, products }) => {
                 key={i}
                 src={urlFor(item)}
                 className={
-                  i === index ? 'small-image selected-image' : 'small-image'
+                  i === index ? "small-image selected-image" : "small-image"
                 }
                 onMouseEnter={() => setIndex(i)}
               />
@@ -52,25 +85,30 @@ const ProductDetails = ({ product, products }) => {
 
           <div className="quantity">
             <p className="quantity-desc">
-              <span className="minus" onClick="">
-                {" "}
+              <span
+                className="minus"
+                onClick={decQty}
+              >
                 <AiOutlineMinus />{" "}
               </span>
-              <span className="num" onClick="">
-                {" "}
-                0{" "}
-              </span>
-              <span className="plus" onClick="">
-                {" "}
-                <AiOutlinePlus />{" "}
+              <span className="num">{qty}</span>
+              <span
+                className="plus"
+                /** */ onClick={incQty}
+              >
+                <AiOutlinePlus />
               </span>
             </p>
           </div>
           <div className="buttons">
-            <button type="button" className="add-to-cart" onClick="">
+            <button
+              type="button"
+              className="add-to-cart"
+              onClick={() => onAdd(product, qty)}
+            >{/***/}
               Add to Cart
             </button>
-            <button type="button" className="buy-now" onClick="">
+            <button type="button" className="buy-now" onClick={handleBuyNow}>
               Buy Now
             </button>
           </div>
@@ -109,6 +147,7 @@ export const getStaticPaths = async () => {
     fallback: "blocking", //indicates the type of fallback
   };
 };
+
 export const getStaticProps = async ({ params: { slug } }) => {
   const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
   const productsQuery = '*[_type == "product"]';
